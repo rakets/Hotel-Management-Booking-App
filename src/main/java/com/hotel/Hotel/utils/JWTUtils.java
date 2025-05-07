@@ -19,9 +19,12 @@ public class JWTUtils {
     private final SecretKey Key;
 
     public JWTUtils() {
-        String secreteString = "m8fQ3vZ@7eGp#rK92sLpB!xD4wYc1Uz";
+        String secreteString = "843567893696976453275974432697R634976R738467TR678T34865R6834R8763T478378637664538745673865783678548735687R3";
         byte[] keyBytes = Base64.getDecoder().decode(secreteString.getBytes(StandardCharsets.UTF_8));
         this.Key = new SecretKeySpec(keyBytes, "HmacSHA256");
+//        String base64Secret = "bThmUTN2WkA3ZUdwI3JLOTJzTHBCIXhENGdZYzFVeg==";
+//        byte[] keyBytes = Base64.getDecoder().decode(base64Secret);
+//        this.Key = new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
     public String generateToken(UserDetails userDetails){
