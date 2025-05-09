@@ -129,7 +129,7 @@ public class RoomService implements IRoomService {
         try {
             Room room = roomRepository.findById(roomId).orElseThrow(() -> new OurException("Room Not Found"));
             RoomDTO roomDTO = Utils.mapRoomEntityToRoomDTOPlusBookings(room);
-            roomRepository.deleteById(roomId);
+//            roomRepository.deleteById(roomId);
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setRoom(roomDTO);
