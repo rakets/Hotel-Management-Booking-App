@@ -68,8 +68,9 @@ public class BookingService implements IBookingService {
     public Response findBookingByConfirmationCode(String confirmationCode) {
         Response response = new Response();
         try {
-            Booking booking = bookingRepository.findByBookingConfirmationCode(confirmationCode).orElseThrow(() ->new OurException("Booking Not Found"));
-            BookingDTO bookingDTO = Utils.mapBookingEntityToBookingDTO(booking);
+            Booking booking = bookingRepository.findByBookingConfirmationCode(confirmationCode).orElseThrow(() -> new OurException("Booking Not Found"));
+//            BookingDTO bookingDTO = Utils.mapBookingEntityToBookingDTO(booking);
+            BookingDTO bookingDTO = Utils.mapBookingEntityToBookingDTOPlusBookedRoom(booking, true);
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setBooking(bookingDTO);
@@ -88,7 +89,7 @@ public class BookingService implements IBookingService {
     public Response getAllBooking() {
         Response response = new Response();
         try {
-            List<Booking> bookingList = bookingRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+            List<Booking> bookingList = bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
             List<BookingDTO> bookingDTOList = Utils.mapBookingListEntityToBookingListDTO(bookingList);
             response.setStatusCode(200);
             response.setMessage("successful");
@@ -123,25 +124,34 @@ public class BookingService implements IBookingService {
         return response;
     }
 
+//    private boolean roomIsAvailable(Booking bookingRequest, List<Booking> existingBookings) {
+//        return existingBookings.stream()
+//                .noneMatch(existingBooking ->
+//                        bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate())
+//                                || bookingRequest.getCheckOutDate().isBefore(existingBooking.getCheckOutDate())
+//                                || (bookingRequest.getCheckInDate().isAfter(existingBooking.getCheckInDate())
+//                                && bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate()))
+//                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
+//
+//                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckOutDate()))
+//                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
+//
+//                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckOutDate()))
+//
+//                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
+//                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate()))
+//
+//                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
+//                                && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
+//                );
+//    }
+
     private boolean roomIsAvailable(Booking bookingRequest, List<Booking> existingBookings) {
         return existingBookings.stream()
-                .noneMatch(existingBooking ->
-                        bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate())
-                                || bookingRequest.getCheckOutDate().isBefore(existingBooking.getCheckOutDate())
-                                || (bookingRequest.getCheckInDate().isAfter(existingBooking.getCheckInDate())
-                                && bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate()))
-                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
-
-                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckOutDate()))
-                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
-
-                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckOutDate()))
-
-                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
-                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate()))
-
-                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
-                                && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
+                .noneMatch(existing ->
+                        bookingRequest.getCheckInDate().isBefore(existing.getCheckOutDate()) &&
+                                bookingRequest.getCheckOutDate().isAfter(existing.getCheckInDate())
                 );
     }
+
 }
