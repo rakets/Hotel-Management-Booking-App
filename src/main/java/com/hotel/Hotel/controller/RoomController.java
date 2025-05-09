@@ -23,7 +23,7 @@ public class RoomController {
     @Autowired
     private IBookingService bookingService;
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> addNewRoom(
             @RequestParam(value = "photo", required = false) MultipartFile photo,
@@ -32,7 +32,7 @@ public class RoomController {
             @RequestParam(value = "roomDescription", required = false) String roomDescription
     ) {
 
-        if (photo == null || photo.isEmpty() || roomType == null || roomType.isBlank() || roomPrice == null || roomType.isBlank()) {
+        if (photo == null || photo.isEmpty() || roomType == null || roomPrice == null || roomType.isBlank()) {
             Response response = new Response();
             response.setStatusCode(400);
             response.setMessage("Please provide values for all fields(photo, roomType, roomPrice)");
